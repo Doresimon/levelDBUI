@@ -3,17 +3,39 @@
   <head>
     <meta charset="UTF-8">
     <title>LevelDB Uer Interface</title>
+    <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   </head>
   <body>
-    <h1>Hello World!</h1>
-    <!-- All of the Node.js APIs are available in this renderer process. -->
-    We are using Node.js <script>document.write(process.versions.node)</script>,
-    Chromium <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
+    <div id="app">
+      <h1>Hello World!</h1>
+      <h1>{{message}}</h1>
+
+      key: 
+      <input type="text" v-model="data.Key"><br>
+      value: 
+      <input type="text" v-model="data.Value"><br>
+      database name: 
+      <input 
+      type="text" 
+      v-model="data.DBName"
+      @change='open()'
+      ><br>
+
+      <button @click='put()'>put</button>
+
+      <div>
+        Response List
+        <p v-for='(i,v) in res'></p>
+      </div>
+    </div>
+
+
 
     <script>
       // You can also require other files to run in this process
       require('./renderer.js')
     </script>
+    <script src="./index.js"></script>
   </body>
 </html>

@@ -1,30 +1,52 @@
 // This file is required by the index.html file and will
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
-// let level = require('level')
- 
-// 1) Create our database, supply location and options.
-//    This will create or open the underlying LevelDB store.
-// let db = level('./mydb')
 
-// async function save(){
-//     await db.put('halo','18 years old');
-//     await db.put('alice','19 years old');
-//     await db.put('bob','20 years old');
-//     await db.put('carol','21 years old');
-// }
+//在渲染器进程 (网页) 中。
+const {ipcRenderer} = require('electron')
 
-// save()
- 
-// // 2) Put a key & value
-// db.put('name', 'Level', function (err) {
-//   if (err) return console.log('Ooops!', err) // some kind of I/O error
- 
-//   // 3) Fetch by key
-//   db.get('name', function (err, value) {
-//     if (err) return console.log('Ooops!', err) // likely the key was not found
- 
-//     // Ta da!
-//     console.log('name=' + value)
-//   })
+// console.log(ipcRenderer.sendSync('synchronous-message', 'ping')) // prints "pong"
+
+// ipcRenderer.on('DB-Channel', (event, arg) => {
+//     console.log(event)
+//     console.log(arg) // prints "pong"
 // })
+
+db = {
+    name:'hello',
+    open(name){
+        this.name = name
+        let args = {
+            type:'CALL',
+            msg:'open db',
+            func:'open',
+            dbName:this.name,
+        }
+        ipcRenderer.send('DB-Channel', args)
+    },
+    put(key, value){
+        let args = {
+            type:'CALL',
+            msg:'put data',
+            func:'put',
+            data:{
+                k:key,
+                v:value,
+            },
+            dbName:this.name,
+        }
+        ipcRenderer.send('DB-Channel', args)
+    },
+    put(key){
+        let args = {
+            type:'CALL',
+            msg:'get data',
+            func:'get',
+            data:{
+                k:key,
+            },
+            dbName:this.name,
+        }
+        ipcRenderer.send('DB-Channel', args)
+    },
+}

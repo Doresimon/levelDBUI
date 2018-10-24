@@ -1,6 +1,15 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, crashReporter, ipcMain} = require('electron')
 const level = require('level')
+
+
+app.setPath('temp', `${__dirname}/temp`)
+crashReporter.start({
+  productName: 'Halo',
+  companyName: 'FDU',
+  submitURL: 'https://your-domain.com/url-to-submit',
+  uploadToServer: false,
+})
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -8,7 +17,18 @@ let win
 
 function createWindow () {
   // Create the browser window.
-  win = new BrowserWindow({width: 800, height: 600})
+  let winConfig = {
+    width: 800, 
+    height: 600,
+    center: true,
+    show: false,
+    backgroundColor: '#ffffff',
+  }
+  win = new BrowserWindow(winConfig)
+
+  win.once('ready-to-show', () => {
+    win.show()
+  })
 
   // and load the index.html of the app.
   // win.loadFile('index.html')  
@@ -18,30 +38,16 @@ function createWindow () {
   win.loadURL(`file://${__dirname}/app/index.html`)
 
   // Open the DevTools.
-  win.webContents.openDevTools()
+  // win.webContents.openDevTools()
 
   // Emitted when the window is closed.
   win.on('closed', function () {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
+    console.log("[WINDOW] win closed")
     win = null
   })
-
-  // 1) Create our database, supply location and options.
-  //    This will create or open the underlying LevelDB store.
-  let db = level('./DB/test')
-
-  async function save(){
-      await db.put('halo','18 years old');
-      await db.put('alice','19 years old');
-      await db.put('bob','20 years old');
-      await db.put('carol','21 years old');
-  }
-
-  save()
-
-
 
 }
 
@@ -69,3 +75,5 @@ app.on('activate', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+require(`${__dirname}/control/event.js`)
