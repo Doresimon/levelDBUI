@@ -9,6 +9,8 @@ git clone ...
 cd ...
 # Install dependencies
 npm install
+# rebuild npm module to electron
+./node_modules/.bin/electron-rebuild
 # Run the app
 npm start
 ```
