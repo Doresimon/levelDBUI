@@ -1,0 +1,23 @@
+{
+  "name": "leveldb-ui",
+  "version": "1.0.0",
+  "description": "...",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "...",
+  "keywords": [
+    "LevelDB",
+    "UI"
+  ],
+  "author": "GitHub",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "^3.0.4",
+    "electron-rebuild": "^1.8.2"
+  },
+  "dependencies": {
+    "level": "^4.0.0"
+  }
+}
