@@ -1,6 +1,6 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, crashReporter, ipcMain} = require('electron')
-const level = require('level')
+const {app, BrowserWindow, crashReporter} = require('electron')
+// const level = require('level')
 
 
 app.setPath('temp', `${__dirname}/temp`)
@@ -38,7 +38,7 @@ function createWindow () {
   win.loadURL(`file://${__dirname}/app/index.html`)
 
   // Open the DevTools.
-  // win.webContents.openDevTools()
+  win.webContents.openDevTools()
 
   // Emitted when the window is closed.
   win.on('closed', function () {

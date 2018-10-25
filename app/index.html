@@ -23,10 +23,12 @@
       ><br>
 
       <button @click='put()'>put</button>
+      <button @click='get()'>get</button>
 
       <div>
         Response List
-        <p v-for='(i,v) in res'></p>
+        <p>{{tmp}}</p>
+        <p v-for='(v, i) in res'>{{i}}. {{v}}</p>
       </div>
     </div>
 

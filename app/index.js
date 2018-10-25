@@ -8,10 +8,14 @@ var app = new Vue({
             DBName:'',
         },
         res:[],
+        tmp:'ping',
     },
     methods: {
         put(){
             db.put(this.data.Key, this.data.Value)
+        },
+        get(){
+            db.get(this.data.Key)
         },
         open(){
             if (this.data.DBName!='') {
@@ -21,8 +25,10 @@ var app = new Vue({
     },
     created(){
         let _t_ = this
-        ipcRenderer.on('DB-Channel', (event, arg) => {
+        db.ipcRenderer.on('DB-response-channel', (event, arg) => {
+            console.log(arg)
             _t_.res.push(arg)
+            _t_.tmp = 'pong'
         })
     }
   })

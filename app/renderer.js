@@ -5,14 +5,8 @@
 //在渲染器进程 (网页) 中。
 const {ipcRenderer} = require('electron')
 
-// console.log(ipcRenderer.sendSync('synchronous-message', 'ping')) // prints "pong"
-
-// ipcRenderer.on('DB-Channel', (event, arg) => {
-//     console.log(event)
-//     console.log(arg) // prints "pong"
-// })
-
 db = {
+    ipcRenderer:ipcRenderer,
     name:'hello',
     open(name){
         this.name = name
@@ -37,7 +31,7 @@ db = {
         }
         ipcRenderer.send('DB-Channel', args)
     },
-    put(key){
+    get(key){
         let args = {
             type:'CALL',
             msg:'get data',
