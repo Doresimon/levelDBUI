@@ -5,34 +5,135 @@
     <title>LevelDB Uer Interface</title>
     <!-- 开发环境版本，包含了有帮助的命令行警告 -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+    <link rel="stylesheet" href="../assets/css/index.css">
+    
   </head>
   <body>
-    <div id="app">
-      <h1>Hello World!</h1>
-      <h1>{{message}}</h1>
+    <el-container id="app">
+      <!-- Header -->
+      <el-header>
+        <el-row 
+        type="flex" 
+        justify="center"
+        class="margin-top-5px">
+          <el-col class="childs-center" :span="24" >
+            <h2>LevelBD User Interface</h2>
+          </el-col>
+        </el-row>
+      </el-header>
 
-      key: 
-      <input type="text" v-model="data.Key"><br>
-      value: 
-      <input type="text" v-model="data.Value"><br>
-      database name: 
-      <input 
-      type="text" 
-      v-model="data.DBName"
-      @change='open()'
-      ><br>
+      <!-- Content -->
+      <el-container>
+        <!-- DB info panel -->
+        <el-aside>
+          <el-row >
+            <el-col class="margin-top-5px" :span="24">
+              <div>
+                <el-input
+                placeholder="default = $CURRENT_DIR/DB">
+                  <template slot="prepend">PATH</template>
+                </el-input>
+              </div>
+            </el-col>
+            <el-col class="margin-top-5px" :span="24">
+              <div>
+                <el-input
+                placeholder="default = 'default'"
+                v-model="data.DBName"
+                @change='open()'>
+                  <template slot="prepend">NAME</template>
+                </el-input>
+              </div>
+            </el-col>
+          </el-row>
+        </el-aside>
 
-      <button @click='put()'>put</button>
-      <button @click='get()'>get</button>
+        <!-- DB operation panel -->
+        <el-main>
+          <el-row 
+          class="margin-top-5px">
+            <el-col :span="8">
+              <div>
+                <el-input 
+                placeholder="请输入内容" 
+                v-model="data.Key">
+                  <template slot="prepend">KEY</template>
+                </el-input>
+              </div>
+            </el-col>
+            <el-col class="childs-center" :span="8">
+              <el-button 
+              class="block"
+              type="success"
+              :disabled="
+              data.Key==''||
+              data.Value==''||
+              data.DBName==''"
+              @click="put()">
+              put
+              </el-button>
+            </el-col>
+            <el-col class="childs-center" :span="8">
+              <el-button 
+              class="block"
+              @click="get()"
+              :disabled="
+              data.Key==''||
+              data.DBName==''"
+              type="primary">
+              get
+              </el-button>
+            </el-col>
+          </el-row>
+          <!-- info printing -->
+          <el-row 
+          class="margin-top-5px">
+            <el-col :span="12">
+              <div 
+              class="terminal">
+                <p><i class="el-icon-info"></i> Response List</p>
+              </div>
+              <div
+              class="terminal"
+              style="height:512px;">
+                <p v-for='(v, i) in res'>[{{i}}] {{v}}</p>
+              </div>
+            </el-col>
+            <el-col :span="12">
+              <div 
+              class="terminal">
+                <p><i class="el-icon-edit"></i> Value Edit</p>
+              </div>
+              <el-input
+              style="height:512px;"
+              type="textarea"
+              placeholder="data can be edited here"
+              :rows="24"
+              v-model="data.Value">
+              </el-input>
+            </el-col>
+          </el-row>
+        </el-main>
 
-      <div>
-        Response List
-        <p>{{tmp}}</p>
-        <p v-for='(v, i) in res'>{{i}}. {{v}}</p>
-      </div>
-    </div>
+      </el-container>
 
-
+      <!-- Footer -->
+      <el-footer>
+        <el-row 
+        type="flex" 
+        justify="center"
+        class="margin-top-5px">
+          <el-col class="childs-center" :span="24" >
+            <h6>Copyright @FDU.BlockChain.Lab 2018</h6>
+          </el-col>
+        </el-row>
+      </el-footer>
+    </el-container>
 
     <script>
       // You can also require other files to run in this process

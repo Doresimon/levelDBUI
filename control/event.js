@@ -1,8 +1,9 @@
 const {ipcMain} = require('electron')
 const level = require('level')
 
-let dbName = 'test'
-let db = level(`./DB/${dbName}`)
+let dbPath = './DB'
+let dbName = 'default'
+let db = level(`${dbPath}/${dbName}`)
 
 ipcMain.on('DB-Channel', async (event, arg) => {
     console.log(arg) // prints "ping"
@@ -10,17 +11,31 @@ ipcMain.on('DB-Channel', async (event, arg) => {
     switch (arg.func) {
         case 'open':
             await db.close()
-            db = level(`./DB/${arg.dbName}`)
+            try{
+                arg.dbPath = arg.dbPath || dbPath
+                db = level(`${arg.dbPath}/${arg.dbName}`)
+                res = `${arg.dbPath}/${arg.dbName} successfully opened`
+            }catch(err){
+                res = err.message
+                db = null
+            }
             break;
         case 'put':
-            await db.put(arg.data.k, arg.data.v)
+            try{
+                await db.put(arg.data.k, arg.data.v)
+                res = `${arg.data.k} successfully updated`
+            }catch(err){res = err.message}
             break;
         case 'get':
-            res = await db.get(arg.data.k)
+            try{
+                res = await db.get(arg.data.k)
+            }catch(err){
+                res = err.message
+            }
             break;
 
         default:
-            res = '??'
+            res = '???'
             break;
     }
 

@@ -1,0 +1,16 @@
+.margin-top-5px{
+    margin-top: 5px;
+}
+.childs-center{
+    text-align: center;
+}
+.terminal{
+    background-color: black;
+    color: chartreuse;
+    font-family: monospace;
+    overflow-y: scroll;
+}
+.block{
+    display: block;
+    width:100%;
+}

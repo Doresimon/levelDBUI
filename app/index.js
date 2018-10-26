@@ -8,7 +8,6 @@ var app = new Vue({
             DBName:'',
         },
         res:[],
-        tmp:'ping',
     },
     methods: {
         put(){

@@ -18,8 +18,8 @@ let win
 function createWindow () {
   // Create the browser window.
   let winConfig = {
-    width: 800, 
-    height: 600,
+    width: 1536, 
+    height: 1024,
     center: true,
     show: false,
     backgroundColor: '#ffffff',
