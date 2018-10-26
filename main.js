@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, crashReporter} = require('electron')
+const {app, BrowserWindow, crashReporter, Tray} = require('electron')
 // const level = require('level')
 
 
@@ -23,6 +23,7 @@ function createWindow () {
     center: true,
     show: false,
     backgroundColor: '#ffffff',
+    // icon: '/Users/somebody/images/window.png',
   }
   win = new BrowserWindow(winConfig)
 

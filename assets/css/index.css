@@ -20,6 +20,11 @@
     color: darkred
 }
 .block{
+    margin-left: 2%;
+    margin-right: 2%;
     display: block;
-    width:100%;
+    width:96%;
+}
+.inline-block{
+    display: inline-block;
 }

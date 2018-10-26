@@ -5,34 +5,47 @@ var app = new Vue({
         data:{
             Key:'',
             Value:'',
-            dbName:'',
-            dbPath:'',
         },
         res:[],
+        db:db,
     },
     methods: {
         put(){
-            db.put(this.data.Key, this.data.Value)
+            this.db.put(this.data.Key, this.data.Value)
         },
         get(){
-            db.get(this.data.Key)
+            this.db.get(this.data.Key)
         },
         del(){
-            db.del(this.data.Key)
+            this.db.del(this.data.Key)
+        },
+        readKeys(){
+            this.db.readKeys()
+        },
+        clearHistory(){
+            this.res = []
+        },
+        clearValue(){
+            this.data.Value = ''
         },
         open(){
-            if (this.data.dbName!='') {
-                db.open(this.data.dbPath, this.data.dbName)
+            if (this.db.name!='') {
+                this.db.open(this.db.path, this.db.name)
             }
         }
     },
     created(){
         let _t_ = this
         db.ipcRenderer.on('DB-response-channel', (event, arg) => {
+            console.log(event)
             console.log(arg)
             switch (arg.method) {
                 case 'get':
                     _t_.data.Value = arg.value
+                    break;
+                case 'readKeys':
+                    _t_.db.total = arg.total
+                    _t_.db.keys = arg.value
                     break;
             
                 default:

@@ -22,7 +22,7 @@
         justify="center"
         class="margin-top-5px">
           <el-col class="childs-center" :span="24" >
-            <h2>LevelBD User Interface</h2>
+            <h2>LevelDB User Interface</h2>
           </el-col>
         </el-row>
       </el-header>
@@ -39,7 +39,7 @@
               <div>
                 <el-input
                 placeholder="default = $CURRENT_DIR/DB"
-                v-model="data.dbPath"
+                v-model="db.path"
                 @change='open()'>
                   <template slot="prepend">PATH</template>
                 </el-input>
@@ -49,11 +49,34 @@
               <div>
                 <el-input
                 placeholder="default = 'default'"
-                v-model="data.dbName"
+                v-model="db.name"
                 @change='open()'>
                   <template slot="prepend">NAME</template>
                 </el-input>
               </div>
+            </el-col>
+            <el-col class="margin-top-5px" :span="24">
+              <div>
+                <el-button 
+                @click="readKeys()"
+                type="text">
+                read keys
+                </el-button>
+              </div>
+            </el-col>
+            <el-col class="margin-top-5px" :span="24">
+                <el-tag
+                type="success">
+                  {{db.total}} records found
+                </el-tag>
+            </el-col>
+            <el-col class="margin-top-5px" :span="24">
+                <el-tag 
+                v-for="(v,i) in db.keys"
+                :key="i"
+                type="info">
+                  {{v}}
+                </el-tag>
             </el-col>
           </el-row>
         </el-aside>
@@ -78,7 +101,7 @@
               :disabled="
               data.Key==''||
               data.Value==''||
-              data.dbName==''"
+              db.name==''"
               @click="put()">
               put
               </el-button>
@@ -89,7 +112,7 @@
               @click="get()"
               :disabled="
               data.Key==''||
-              data.dbName==''"
+              db.name==''"
               type="primary">
               get
               </el-button>
@@ -100,7 +123,7 @@
               @click="del()"
               :disabled="
               data.Key==''||
-              data.dbName==''"
+              db.name==''"
               type="danger">
               delete
               </el-button>
@@ -112,7 +135,18 @@
             <el-col :span="12">
               <div 
               class="terminal info">
-                <p><i class="el-icon-info"></i> Response List</p>
+                <span class="inline-block">
+                  &nbsp;
+                  <i class="el-icon-info"></i>
+                  Response List
+                </span>
+                <span class="inline-block">
+                  <el-button 
+                  @click="clearHistory()"
+                  type="text">
+                  clear
+                  </el-button>
+                </span>
               </div>
               <div
               class="terminal"
@@ -126,7 +160,18 @@
             <el-col :span="12">
               <div 
               class="terminal info">
-                <p><i class="el-icon-edit"></i> Value Edit</p>
+                <span class="inline-block">
+                    &nbsp;
+                    <i class="el-icon-edit"></i>
+                    Value Edit
+                </span>
+                <span class="inline-block">
+                  <el-button 
+                  @click="clearValue()"
+                  type="text">
+                  clear
+                  </el-button>
+                </span>
               </div>
               <el-input
               style="height:512px;"

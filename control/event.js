@@ -15,11 +15,11 @@ ipcMain.on('DB-Channel', async (event, arg) => {
         case 'open':
             await db.close()
             try{
-                arg.dbPath = arg.dbPath || dbPath
-                if(!fs.existsSync(arg.dbPath))  {throw {message:"path is wrong"}}
-                db = level(`${arg.dbPath}/${arg.dbName}`)
+                arg.db.path = arg.db.path || dbPath
+                if(!fs.existsSync(arg.db.path))  {throw {message:"path is wrong"}}
+                db = level(`${arg.db.path}/${arg.db.name}`)
                 res.type = "info"
-                res.msg = `${arg.dbPath}/${arg.dbName} successfully opened`
+                res.msg = `${arg.db.path}/${arg.db.name} successfully opened`
             }catch(err){
                 res.type = "error"
                 res.msg = err.message
@@ -50,6 +50,53 @@ ipcMain.on('DB-Channel', async (event, arg) => {
                 res.value = await db.del(arg.data.k)
                 res.type = "info"
                 res.msg = `${arg.data.k} deleted`
+            }catch(err){
+                res.type = "error"
+                res.msg = err.message
+            }
+            break;
+        case 'readKeys':
+            try{
+                let option = {
+                    // start:'', // null = 0 in ascii
+                    // end: '', // int32
+                    keys:true,  // true
+                    values:false,   // true
+                    reverse:false, // false
+                    limit:32, // -1
+                }
+                res.type = 'info'
+                res.msg = 'looking up~'
+                let resDelay = {
+                    method:arg.func,
+                    value:[],
+                    total:0,
+                }
+                db.createReadStream(option)
+                .on('data', async function (data) {
+                    resDelay.value.push(data)
+                    // const buf = Buffer.from(data, 'ascii');
+                    // console.log(buf)
+                    // console.log(buf.toString('utf-8'))
+
+                    // // let x = await db.get(data)
+                    // console.log(typeof data)
+                    // console.log(typeof buf)
+
+                })
+                .on('error', function (err) {
+                    console.log('Oh my!', err)
+                })
+                .on('close', function () {
+                    console.log('Stream closed')
+                })
+                .on('end', function () {
+                    resDelay.total = resDelay.value.length
+                    resDelay.type = 'info'
+                    resDelay.msg = 'looking up finish~'
+                    event.sender.send('DB-response-channel', resDelay)
+                })
+
             }catch(err){
                 res.type = "error"
                 res.msg = err.message

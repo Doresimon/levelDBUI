@@ -7,8 +7,10 @@ const {ipcRenderer} = require('electron')
 
 db = {
     ipcRenderer:ipcRenderer,
-    name:'dafault',
+    name:'default',
     path:'./DB',
+    keys:[],
+    total:0,
     open(path, name){
         this.name = name
         this.path = path
@@ -16,8 +18,10 @@ db = {
             type:'CALL',
             msg:'open db',
             func:'open',
-            dbName:this.name,
-            dbPath:this.path,
+            db:{
+                name:this.name,
+                path:this.path,
+            },
         }
         ipcRenderer.send('DB-Channel', args)
     },
@@ -30,7 +34,10 @@ db = {
                 k:key,
                 v:value,
             },
-            dbName:this.name,
+            db:{
+                name:this.name,
+                path:this.path,
+            },
         }
         ipcRenderer.send('DB-Channel', args)
     },
@@ -42,7 +49,10 @@ db = {
             data:{
                 k:key,
             },
-            dbName:this.name,
+            db:{
+                name:this.name,
+                path:this.path,
+            },
         }
         ipcRenderer.send('DB-Channel', args)
     },
@@ -54,7 +64,18 @@ db = {
             data:{
                 k:key,
             },
-            dbName:this.name,
+            db:{
+                name:this.name,
+                path:this.path,
+            },
+        }
+        ipcRenderer.send('DB-Channel', args)
+    },
+    readKeys(){
+        let args = {
+            type:'CALL',
+            msg:'read all key of current DB instance',
+            func:'readKeys',
         }
         ipcRenderer.send('DB-Channel', args)
     },
