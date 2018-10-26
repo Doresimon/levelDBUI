@@ -18,7 +18,7 @@ let win
 function createWindow () {
   // Create the browser window.
   let winConfig = {
-    width: 1536, 
+    width: 1922, 
     height: 1024,
     center: true,
     show: false,

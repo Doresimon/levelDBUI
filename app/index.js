@@ -5,7 +5,8 @@ var app = new Vue({
         data:{
             Key:'',
             Value:'',
-            DBName:'',
+            dbName:'',
+            dbPath:'',
         },
         res:[],
     },
@@ -16,9 +17,12 @@ var app = new Vue({
         get(){
             db.get(this.data.Key)
         },
+        del(){
+            db.del(this.data.Key)
+        },
         open(){
-            if (this.data.DBName!='') {
-                db.open(this.data.DBName)
+            if (this.data.dbName!='') {
+                db.open(this.data.dbPath, this.data.dbName)
             }
         }
     },
@@ -26,8 +30,19 @@ var app = new Vue({
         let _t_ = this
         db.ipcRenderer.on('DB-response-channel', (event, arg) => {
             console.log(arg)
-            _t_.res.push(arg)
-            _t_.tmp = 'pong'
+            switch (arg.method) {
+                case 'get':
+                    _t_.data.Value = arg.value
+                    break;
+            
+                default:
+                    break;
+            }
+            let tmp = {
+                type:arg.type,
+                msg:arg.msg,
+            }
+            _t_.res.push(tmp)
         })
     }
   })

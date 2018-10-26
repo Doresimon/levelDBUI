@@ -6,9 +6,18 @@
 }
 .terminal{
     background-color: black;
-    color: chartreuse;
+    /* color: chartreuse; */
     font-family: monospace;
     overflow-y: scroll;
+}
+.info{
+    color: chartreuse;
+}
+.warn{
+    color: chocolate
+}
+.error{
+    color: darkred
 }
 .block{
     display: block;

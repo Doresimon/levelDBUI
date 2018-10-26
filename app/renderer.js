@@ -7,14 +7,17 @@ const {ipcRenderer} = require('electron')
 
 db = {
     ipcRenderer:ipcRenderer,
-    name:'hello',
-    open(name){
+    name:'dafault',
+    path:'./DB',
+    open(path, name){
         this.name = name
+        this.path = path
         let args = {
             type:'CALL',
             msg:'open db',
             func:'open',
             dbName:this.name,
+            dbPath:this.path,
         }
         ipcRenderer.send('DB-Channel', args)
     },
@@ -36,6 +39,18 @@ db = {
             type:'CALL',
             msg:'get data',
             func:'get',
+            data:{
+                k:key,
+            },
+            dbName:this.name,
+        }
+        ipcRenderer.send('DB-Channel', args)
+    },
+    del(key){
+        let args = {
+            type:'CALL',
+            msg:'delete data',
+            func:'del',
             data:{
                 k:key,
             },
