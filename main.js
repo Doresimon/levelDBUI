@@ -1,7 +1,7 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, crashReporter, Tray} = require('electron')
+const electron = require('electron')
+const { app, BrowserWindow, crashReporter } = electron
 // const level = require('level')
-
 
 app.setPath('temp', `${__dirname}/temp`)
 crashReporter.start({
@@ -15,11 +15,13 @@ crashReporter.start({
 // be closed automatically when the JavaScript object is garbage collected.
 let win
 
-function createWindow () {
+function createWindow() {
+  const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
+
   // Create the browser window.
   let winConfig = {
-    width: 1922, 
-    height: 1024,
+    width: width, 
+    height: height,
     center: true,
     show: false,
     backgroundColor: '#ffffff',
