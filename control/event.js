@@ -27,7 +27,8 @@ ipcMain.on('DB-Channel', async (event, arg) => {
             break;
         case 'put':
             try{
-                await db.put(arg.data.k, arg.data.v)
+                let buf = Buffer.from(arg.data.k)
+                await db.put(buf, arg.data.v)
                 res.type = "info"
                 res.msg = `${arg.data.k} successfully updated`
             }catch(err){
@@ -37,6 +38,9 @@ ipcMain.on('DB-Channel', async (event, arg) => {
             break;
         case 'get':
             try{
+                if (arg.db.coding=='uri') {
+                    arg.data.k =decodeURI(arg.data.k)
+                }
                 res.value = await db.get(arg.data.k)
                 res.type = "info"
                 res.msg = 'ok'
@@ -68,21 +72,42 @@ ipcMain.on('DB-Channel', async (event, arg) => {
                 res.type = 'info'
                 res.msg = 'looking up~'
                 let resDelay = {
-                    method:arg.func,
+                    method:arg.func+'-data',
                     value:[],
                     total:0,
                 }
+                let k = 1
                 db.createReadStream(option)
                 .on('data', async function (data) {
-                    resDelay.value.push(data)
-                    // const buf = Buffer.from(data, 'ascii');
-                    // console.log(buf)
-                    // console.log(buf.toString('utf-8'))
+                    let buf = Buffer.from(data)
 
-                    // // let x = await db.get(data)
-                    // console.log(typeof data)
-                    // console.log(typeof buf)
-
+                    resDelay.value.push({
+                        utf8:   buf.toString('utf8'),
+                        hex:    buf.toString('hex'),
+                        ascii:  buf.toString('ascii'),
+                        uri:    encodeURI(data),
+                    })
+                    // resDelay.value.push(`${data.length} ${data}`)
+                    // kk = Buffer.from(data,'utf8')
+                    // let buf = Buffer.from(data)
+                    // let buf_ascii = Buffer.from(data,'ascii')
+                    // let buf_utf8 = Buffer.from(data,'utf8')
+                    // // resDelay.value.push(`${data.length} ${buf.toString('hex')}`)
+                    // // console.log(data.length)
+                    // // console.log(typeof data)
+                    // // console.log(data)
+                    console.log(buf)
+                    // console.log(buf_ascii)
+                    // console.log(buf_utf8)
+                    // console.log(buf.toString())
+                    // console.log(buf.toString('ascii'))
+                    // console.log(buf.toString('utf8'))
+                    // let d = await db.get(buf.toString('ascii'))
+                    // console.log(d)
+                    // let e = await db.get(buf.toString('ascii'))
+                    // console.log(Buffer.from(e,'ascii'))
+                    // let f = await db.get(buf.toString('utf8'))
+                    // console.log(Buffer.from(f,'ascii'))
                 })
                 .on('error', function (err) {
                     console.log('Oh my!', err)
@@ -90,7 +115,7 @@ ipcMain.on('DB-Channel', async (event, arg) => {
                 .on('close', function () {
                     console.log('Stream closed')
                 })
-                .on('end', function () {
+                .on('end', async function () {
                     resDelay.total = resDelay.value.length
                     resDelay.type = 'info'
                     resDelay.msg = 'looking up finish~'

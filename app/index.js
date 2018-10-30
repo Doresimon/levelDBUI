@@ -8,13 +8,18 @@ var app = new Vue({
         },
         res:[],
         db:db,
+        codingOption:['utf8','hex','ascii'],
+        coding:'utf8',
     },
     methods: {
         put(){
             this.db.put(this.data.Key, this.data.Value)
         },
-        get(){
-            this.db.get(this.data.Key)
+        get(k, c){
+            if (k) {
+                this.data.Key = k
+            }
+            this.db.get(this.data.Key, c)
         },
         del(){
             this.db.del(this.data.Key)
@@ -39,18 +44,27 @@ var app = new Vue({
         db.ipcRenderer.on('DB-response-channel', (event, arg) => {
             console.log(event)
             console.log(arg)
-            switch (arg.method) {
-                case 'get':
-                    _t_.data.Value = arg.value
-                    break;
-                case 'readKeys':
-                    _t_.db.total = arg.total
-                    _t_.db.keys = arg.value
-                    break;
-            
-                default:
-                    break;
-            }
+            if (arg.type=='info') {
+                switch (arg.method) {
+                    case 'get':
+                        _t_.data.Value = Buffer.from(arg.value).toString(_t_.coding)
+                        // myString = JSON.parse( JSON.stringify( arg.value ) )
+                        break;
+                    case 'readKeys-data':
+                        _t_.db.total = arg.total
+                        _t_.db.keys = []
+                        console.log(arg.value)
+                        for (let i = 0; i < arg.value.length; i++) {
+                            const e = arg.value[i];
+                            e.id = i
+                            _t_.db.keys.push(e)
+                        }
+                        break;
+                
+                    default:
+                        break;
+                }
+            }            
             let tmp = {
                 type:arg.type,
                 msg:arg.msg,

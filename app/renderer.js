@@ -41,7 +41,7 @@ db = {
         }
         ipcRenderer.send('DB-Channel', args)
     },
-    get(key){
+    get(key, c){
         let args = {
             type:'CALL',
             msg:'get data',
@@ -54,6 +54,7 @@ db = {
                 path:this.path,
             },
         }
+        args.db.coding = c
         ipcRenderer.send('DB-Channel', args)
     },
     del(key){

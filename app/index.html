@@ -55,7 +55,7 @@
                 </el-input>
               </div>
             </el-col>
-            <el-col class="margin-top-5px" :span="24">
+            <el-col class="margin-top-5px" :span="12">
               <div>
                 <el-button 
                 @click="readKeys()"
@@ -64,19 +64,57 @@
                 </el-button>
               </div>
             </el-col>
-            <el-col class="margin-top-5px" :span="24">
+            <el-col class="margin-top-5px" :span="12">
                 <el-tag
                 type="success">
                   {{db.total}} records found
                 </el-tag>
             </el-col>
-            <el-col class="margin-top-5px" :span="24">
+            <!-- <el-col class="margin-top-5px" :span="24">
                 <el-tag 
                 v-for="(v,i) in db.keys"
                 :key="i"
                 type="info">
                   {{v}}
                 </el-tag>
+            </el-col> -->
+            <el-col class="margin-top-5px" :span="24" style="height:500px;overflow: scroll;">
+              <el-table
+              :data="db.keys"
+              style="width:500px;overflow-x: auto"
+              :default-sort = "{prop: 'id', order: 'descending'}"
+              >
+                <el-table-column
+                  prop="id"
+                  label="id"
+                  sortable
+                  width='80'>
+                  <template slot-scope="scope">
+                      <el-button 
+                      size="mini"
+                      class="block"
+                      type="info"
+                      @click="get(scope.row.uri, 'uri')">
+                      {{scope.row.id}}
+                      </el-button>
+                  </template>
+                </el-table-column>
+                <!-- <el-table-column
+                  prop="uri"
+                  label="uri"
+                  sortable>
+                </el-table-column> -->
+                <el-table-column
+                  prop="hex"
+                  label="hex"
+                  sortable>
+                </el-table-column>
+                <el-table-column
+                  prop="utf8"
+                  label="utf8"
+                  sortable>
+                </el-table-column>
+              </el-table>
             </el-col>
           </el-row>
         </el-aside>
@@ -171,6 +209,16 @@
                   type="text">
                   clear
                   </el-button>
+                </span>
+                <span class="inline-block">
+                  <el-select v-model="coding" placeholder="encoding">
+                    <el-option
+                      v-for="(v, i) in codingOption"
+                      :key="i"
+                      :label="v"
+                      :value="v">
+                    </el-option>
+                  </el-select>
                 </span>
               </div>
               <el-input
